@@ -330,3 +330,31 @@ exports.changePassword = async (req, res) => {
         res.status(500).json({ success: false, message: "An error has occured" });
     }
 }
+
+exports.me = async (req, res) => {
+    try {
+        const { userId } = req.user;
+
+        const user = await User.findById(userId).select(
+            "_id email username verified"
+        );
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: "An error has occurred"
+        });
+    }
+};
