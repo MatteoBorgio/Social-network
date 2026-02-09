@@ -65,41 +65,30 @@ exports.signup = async (req, res) => {
 }
 
 exports.signin = async (req, res) => {
-    const {email, password} = req.body
+    const { email, password } = req.body
     try {
-        const {error, value} = signinSchema.validate({email, password})
-
+        const { error } = signinSchema.validate({ email, password })
         if (error) {
-            return res
-                .status(401)
-                .json({
-                    success: false,
-                    message: error.details[0].message
-                })
+            return res.status(401).json({
+                success: false,
+                message: error.details[0].message
+            })
         }
 
-        const existingUser = await User
-            .findOne({email})
-            .select('+password')
-
+        const existingUser = await User.findOne({ email }).select('+password')
         if (!existingUser) {
-            return res
-                .status(404)
-                .json({
-                    success: false,
-                    message: 'User doesn\'t exist'
-                })
+            return res.status(404).json({
+                success: false,
+                message: 'User doesn\'t exist'
+            })
         }
 
-        const result = await doHashValidation(password, existingUser.password)
-
-        if (!result) {
-            return res
-                .status(401)
-                .json({
-                    success: false,
-                    message: 'Invalid credential'
-                })
+        const isValidPassword = await doHashValidation(password, existingUser.password)
+        if (!isValidPassword) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid credential'
+            })
         }
 
         const token = jwt.sign({
@@ -110,6 +99,8 @@ exports.signin = async (req, res) => {
             expiresIn: '8h'
         })
 
+        existingUser.password = undefined
+
         res.cookie('Authorization', 'Bearer ' + token, {
             expires: new Date(Date.now() + 8 * 3600000),
             httpOnly: process.env.NODE_ENV === 'production',
@@ -117,20 +108,17 @@ exports.signin = async (req, res) => {
         }).json({
             success: true,
             token,
-            message: 'Logged in successfully'
+            message: 'Logged in successfully',
+            result: existingUser
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "An error has occurred"
         })
     }
-    catch (error) {
-        console.log(error)
-        res
-            .status(500)
-            .json({
-                success: false,
-                message: "An error has occurred"
-            })
-    }
 }
-
 exports.signout = async (req, res) => {
     res
         .clearCookie('Authorization')

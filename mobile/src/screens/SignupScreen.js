@@ -78,7 +78,6 @@ export default function SignupScreen({ navigation }) {
                     keyboardShouldPersistTaps="handled"
                 >
                     <Text style={styles.headerTitle}>Crea Account</Text>
-                    <Text style={styles.headerSubtitle}>Unisciti alla community oggi.</Text>
 
                     <View style={styles.formContainer}>
 
@@ -143,7 +142,7 @@ export default function SignupScreen({ navigation }) {
                             ) : (
                                 <View>
                                     <Button title="Registrati" onPress={handleSubmit} color="#0064E0"/>
-                                    <Button title={"Hai già un account?"} onPress={() => { navigation.navigate('Signin')}} />
+                                    <Button title={"Hai già un account? Accedi"} onPress={() => { navigation.navigate('Signin')}} />
                                 </View>
                             )}
                         </View>
@@ -168,12 +167,6 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: 'bold',
         color: '#1c1e21',
-        textAlign: 'center',
-        marginBottom: 5,
-    },
-    headerSubtitle: {
-        fontSize: 16,
-        color: '#65676b',
         textAlign: 'center',
         marginBottom: 40,
     },

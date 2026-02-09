@@ -1,7 +1,10 @@
-import {Text} from "react-native";
+import {Button, Text, View} from "react-native";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
     return (
-        <Text>Home Page</Text>
+        <View>
+            <Text>Home Page</Text>
+            <Button title={"Vai al login"} onPress={navigation.navigate('Signin')} />
+        </View>
     )
 }
