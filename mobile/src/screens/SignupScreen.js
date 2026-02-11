@@ -1,7 +1,18 @@
 import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Alert, Button, StyleSheet, Text, TextInput, View, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
-import { UserContext } from "../context/UserContext";
+import {
+    Alert,
+    Button,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    TouchableOpacity
+} from "react-native";
 import axios from "axios";
 
 export default function SignupScreen({ navigation }) {
@@ -140,10 +151,23 @@ export default function SignupScreen({ navigation }) {
                             {isLoading ? (
                                 <ActivityIndicator size="large" color="#0064E0" />
                             ) : (
-                                <View>
-                                    <Button title="Registrati" onPress={handleSubmit} color="#0064E0"/>
-                                    <Button title={"Hai già un account? Accedi"} onPress={() => { navigation.navigate('Signin')}} />
-                                </View>
+                                <>
+                                    <TouchableOpacity
+                                        style={styles.primaryButton}
+                                        onPress={handleSubmit}
+                                    >
+                                        <Text style={styles.primaryButtonText}>Registrati</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.secondaryButton}
+                                        onPress={() => navigation.navigate('Signin')}
+                                    >
+                                        <Text style={styles.secondaryButtonText}>
+                                            Hai già un account? Accedi
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
                             )}
                         </View>
                     </View>
@@ -204,8 +228,37 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     buttonContainer: {
-        marginTop: 20,
+        marginTop: 30,
+    },
+
+    primaryButton: {
+        backgroundColor: '#0064E0',
+        paddingVertical: 15,
         borderRadius: 12,
-        overflow: 'hidden',
-    }
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 15,
+        elevation: 2,
+    },
+
+    primaryButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+
+    secondaryButton: {
+        borderWidth: 1.5,
+        borderColor: '#0064E0',
+        paddingVertical: 15,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    secondaryButtonText: {
+        color: '#0064E0',
+        fontSize: 15,
+        fontWeight: '600',
+    },
 });

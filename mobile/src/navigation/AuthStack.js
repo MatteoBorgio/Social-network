@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator()
 export default function AuthStack() {
     return (
         <SafeAreaProvider>
-            <Stack.Navigator>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
                 <Stack.Screen name={"Signup"} component={SignupScreen}></Stack.Screen>
                 <Stack.Screen name={"Signin"} component={SigninScreen}></Stack.Screen>
             </Stack.Navigator>

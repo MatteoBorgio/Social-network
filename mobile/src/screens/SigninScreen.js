@@ -5,7 +5,7 @@ import {
     ScrollView,
     StyleSheet,
     Text,
-    TextInput,
+    TextInput, TouchableOpacity,
     View
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -47,6 +47,10 @@ export default function SigninScreen({ navigation }) {
                 if (response.data.success) {
                     Alert.alert("Accesso effettuato con successo!");
                     loginUser(response.data.result)
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "App" }],
+                    });
                 }
             } catch (error) {
                 console.log("Errore Signup:", error);
@@ -121,10 +125,23 @@ export default function SigninScreen({ navigation }) {
                             {isLoading ? (
                                 <ActivityIndicator size="large" color="#0064E0" />
                             ) : (
-                                <View>
-                                    <Button title="Accedi" onPress={handleSubmit} color="#0064E0"/>
-                                    <Button title={"Non hai un account? Registrati"} onPress={() => { navigation.navigate('Signup')}} />
-                                </View>
+                                <>
+                                    <TouchableOpacity
+                                        style={styles.primaryButton}
+                                        onPress={handleSubmit}
+                                    >
+                                        <Text style={styles.primaryButtonText}>Accedi</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.secondaryButton}
+                                        onPress={() => navigation.navigate('Signup')}
+                                    >
+                                        <Text style={styles.secondaryButtonText}>
+                                            Non hai un account? Registrati
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
                             )}
                         </View>
                     </View>
@@ -185,8 +202,37 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     },
     buttonContainer: {
-        marginTop: 20,
+        marginTop: 30,
+    },
+
+    primaryButton: {
+        backgroundColor: '#0064E0',
+        paddingVertical: 15,
         borderRadius: 12,
-        overflow: 'hidden',
-    }
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 15,
+        elevation: 2,
+    },
+
+    primaryButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+
+    secondaryButton: {
+        borderWidth: 1.5,
+        borderColor: '#0064E0',
+        paddingVertical: 15,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
+    secondaryButtonText: {
+        color: '#0064E0',
+        fontSize: 15,
+        fontWeight: '600',
+    },
 });
