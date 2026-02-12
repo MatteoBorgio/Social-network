@@ -119,15 +119,6 @@ exports.signin = async (req, res) => {
         })
     }
 }
-exports.signout = async (req, res) => {
-    res
-        .clearCookie('Authorization')
-        .status(200)
-        .json({
-            success: true,
-            message: 'Logged out successfully'
-        })
-}
 
 exports.sendVerificationCode = async (req, res) => {
     const {email} = req.body
