@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
     Alert,
-    Button,
     StyleSheet,
     Text,
     TextInput,

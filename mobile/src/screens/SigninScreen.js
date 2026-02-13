@@ -41,6 +41,7 @@ export default function SigninScreen({ navigation }) {
                 setIsLoading(true)
                 const response = await axios.post(
                     'http://192.168.1.6:5000/api/auth/signin',
+
                     { email, password }
                 );
 
@@ -141,6 +142,15 @@ export default function SigninScreen({ navigation }) {
                                             Non hai un account? Registrati
                                         </Text>
                                     </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        style={styles.secondaryButton}
+                                        onPress={() => navigation.navigate("SendVerificationCode")}
+                                    >
+                                        <Text style={styles.secondaryButtonText}>
+                                            Invia codice di verifica
+                                        </Text>
+                                    </TouchableOpacity>
                                 </>
                             )}
                         </View>
@@ -228,6 +238,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 15
     },
 
     secondaryButtonText: {
