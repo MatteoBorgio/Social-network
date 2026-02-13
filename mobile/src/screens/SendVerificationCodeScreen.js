@@ -7,7 +7,6 @@ export default function SendVerificationCodeScreen({navigation}) {
     const [email, setEmail] = useState("")
     const [submitted, setSubmitted] = useState(false)
     const [errors, setErrors] = useState({})
-    const [isLoading, setIsLoading] = useState(false)
 
     const validateForm = () => {
         let newErrors = {};
@@ -23,7 +22,6 @@ export default function SendVerificationCodeScreen({navigation}) {
 
         if (validateForm()) {
             try {
-                setIsLoading(true)
                 const response = await axios.patch(
                     'http://192.168.1.6:5000/api/auth/send-verification-code',
                     { email }
@@ -45,7 +43,7 @@ export default function SendVerificationCodeScreen({navigation}) {
                 }
 
             } catch (error) {
-                console.log("Errore Signup:", error);
+                console.log("Errore Send Verification:", error);
 
                 let errorMsg = "Si è verificato un errore di connessione";
 
@@ -56,12 +54,8 @@ export default function SendVerificationCodeScreen({navigation}) {
                 }
 
                 Alert.alert("Errore", errorMsg);
-            } finally {
-                setIsLoading(false)
             }
         }
-
-
     }
 
     return (
@@ -85,7 +79,9 @@ export default function SendVerificationCodeScreen({navigation}) {
                         autoCapitalize="none"
                         autoCorrect={false}
                     />
+                    {submitted && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                 </View>
+
                 <TouchableOpacity
                     style={styles.primaryButton}
                     onPress={() => handleSubmit()}
@@ -156,10 +152,6 @@ const styles = StyleSheet.create({
         marginLeft: 4,
         fontWeight: '500'
     },
-    buttonContainer: {
-        marginTop: 30,
-    },
-
     primaryButton: {
         backgroundColor: '#0064E0',
         paddingVertical: 15,
