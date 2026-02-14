@@ -65,11 +65,13 @@ export default function VerifyVerificationCode({ navigation }) {
                     <Text style={styles.label}>Codice</Text>
                     <TextInput
                         style={[
-                        styles.input,
-                    ]}
+                            styles.input,
+                            (submitted && errors.providedCode) && styles.inputError
+                        ]}
                         value={providedCode}
                         onChangeText={(text) => {
                             setProvidedCode(text);
+                            if (submitted) setErrors({...errors, providedCode: null});
                         }}
                         placeholder={"Verifica la tua posta elettronica"}
                         placeholderTextColor="#aaa"
