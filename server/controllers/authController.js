@@ -246,7 +246,7 @@ exports.verifyVerificationCode = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-    const { userId } = req.user; // Leggi SOLO l'ID dal token, ignora il campo 'verified' del token
+    const { userId } = req.user;
     const { oldPassword, newPassword } = req.body;
 
     try {
@@ -261,14 +261,12 @@ exports.changePassword = async (req, res) => {
             return res.status(401).json({ success: false, message: 'User doesn\'t exist' });
         }
 
-        // --- MODIFICA QUI: Controlla la verifica dal DB, non dal Token ---
         if (!existingUser.verified) {
             return res.status(401).json({
                 success: false,
                 message: "You are not verified!"
             });
         }
-        // ---------------------------------------------------------------
 
         const result = await doHashValidation(oldPassword, existingUser.password);
 

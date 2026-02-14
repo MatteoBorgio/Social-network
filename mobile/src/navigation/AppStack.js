@@ -1,6 +1,7 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import LogoutButton from "../components/LogoutButton"
+import SettingsScreen from "../screens/SettingsScreen";
+import SettingsIcon from "../components/SettingsIcon";
 
 const Stack = createNativeStackNavigator()
 
@@ -10,7 +11,11 @@ export default function AppStack() {
             <Stack.Screen name={"Home"} component={HomeScreen} options={{
                 title: "Home",
                 headerShown: true,
-                headerRight: () => <LogoutButton />
+                headerRight: () => <SettingsIcon />
+            }}></Stack.Screen>
+            <Stack.Screen name={"Settings"} component={SettingsScreen} options={{
+                title: "Settings",
+                headerShown: true
             }}></Stack.Screen>
         </Stack.Navigator>
     )
