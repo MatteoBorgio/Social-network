@@ -1,12 +1,15 @@
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import axios from "axios";
+import {TemporaryEmailContext} from "../context/TemporaryEmail";
 
 export default function SendVerificationCodeScreen({navigation}) {
     const [email, setEmail] = useState("")
     const [submitted, setSubmitted] = useState(false)
     const [errors, setErrors] = useState({})
+
+    const { changeTemporaryEmail } = useContext(TemporaryEmailContext)
 
     const validateForm = () => {
         let newErrors = {};
@@ -28,6 +31,8 @@ export default function SendVerificationCodeScreen({navigation}) {
                 )
 
                 if (response.data.success) {
+                    changeTemporaryEmail(email)
+                    console.log("Email temporanea aggiornata: " + email)
                     Alert.alert(
                         "Successo",
                         "Codice inviato con successo!",

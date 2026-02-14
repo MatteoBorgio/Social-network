@@ -3,19 +3,19 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useState} from "react";
 import axios from "axios";
 import {UserContext} from "../context/UserContext";
+import {TemporaryEmailContext} from "../context/TemporaryEmail";
 
 export default function VerifyVerificationCode({ navigation }) {
     const [submitted, setSubmitted] = useState(false)
-    const [email, setEmail] = useState("")
     const [errors, setErrors] = useState({})
     const [providedCode, setProvidedCode] = useState("")
 
+    const {temporaryEmail, nullifyTemporaryEmail} = useContext(TemporaryEmailContext)
     const { loginUser } = useContext(UserContext)
 
     const validateForm = () => {
         let newErrors = {};
 
-        if (!email) newErrors.email = "Email richiesta";
         if (!providedCode) newErrors.providedCode = "Il codice deve essere immesso";
 
         setErrors(newErrors);
@@ -29,10 +29,11 @@ export default function VerifyVerificationCode({ navigation }) {
             if (validateForm()) {
                 const response = await axios.patch(
                     'http://192.168.1.6:5000/api/auth/verify-verification-code',
-                    { email, providedCode }
+                    { email: temporaryEmail, providedCode }
                 )
 
                 if (response.data.success) {
+                    nullifyTemporaryEmail()
                     loginUser(response.data.result)
                     navigation.reset({
                         index: 0,
@@ -61,33 +62,14 @@ export default function VerifyVerificationCode({ navigation }) {
             <View style={styles.scrollContainer}>
                 <Text style={styles.headerTitle}>Verifica il tuo codice</Text>
                 <View style={styles.formContainer}>
-                    <Text style={styles.label}>Email</Text>
-                    <TextInput
-                        style={[
-                            styles.input,
-                            (submitted && errors.email) && styles.inputError
-                        ]}
-                        value={email}
-                        onChangeText={(text) => {
-                            setEmail(text);
-                            if (submitted) setErrors({...errors, email: null});
-                        }}
-                        placeholder="example@gmail.com"
-                        placeholderTextColor="#aaa"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                    />
-                    {submitted && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                     <Text style={styles.label}>Codice</Text>
                     <TextInput
                         style={[
                         styles.input,
-                        (submitted && errors.email) && styles.inputError
                     ]}
                         value={providedCode}
                         onChangeText={(text) => {
                             setProvidedCode(text);
-                            if (submitted) setErrors({...errors, email: null});
                         }}
                         placeholder={"Verifica la tua posta elettronica"}
                         placeholderTextColor="#aaa"
