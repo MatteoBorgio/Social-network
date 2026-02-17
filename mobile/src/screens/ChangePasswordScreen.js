@@ -1,12 +1,62 @@
-import {ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
+import {ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
+import axios from "axios";
+import {UserContext} from "../context/UserContext";
 
-export default function ChangePasswordScreen() {
+export default function ChangePasswordScreen({ navigation }) {
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [errors, setErrors] = useState({})
     const [submitted, setSubmitted] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
+    const { loginUser, token } = useContext(UserContext)
+
+    const validateForm = () => {
+        let newErrors = {};
+
+        if (!oldPassword) newErrors.oldPassword = "Vecchia password richiesta";
+        if (!newPassword) newErrors.newPassword = "Nuova password richiesta";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
+
+    const handleSubmit = async () => {
+        setSubmitted(true);
+        if (validateForm()) {
+            try {
+                setIsLoading(true)
+
+                const response = await axios.patch(
+                    'http://192.168.1.6:5000/api/auth/change-password',
+                    { oldPassword, newPassword },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (response.data.success) {
+                    Alert.alert("Password modificata con successo!");
+                    loginUser(response.data.updatedUser)
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: "App"}],
+                    });
+                }
+            } catch (error) {
+                console.log("Error: " + error)
+                const msg = error.response?.data?.message || "Errore di connessione";
+                Alert.alert("Errore", msg);
+            }
+            finally {
+                setIsLoading(false)
+            }
+        }
+    }
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -17,7 +67,7 @@ export default function ChangePasswordScreen() {
                 <Text style={styles.headerTitle}>Modifica la tua password</Text>
                 <View style={styles.formContainer}>
                     <Text style={styles.label}>
-                        Imposta la tua password attuale
+                        Password attuale
                     </Text>
                     <TextInput
                         style={[
@@ -33,9 +83,42 @@ export default function ChangePasswordScreen() {
                         placeholderTextColor="#aaa"
                         autoCapitalize="none"
                         autoCorrect={false}
+                        secureTextEntry={true}
                     />
                     {submitted && errors.oldPassword && <Text style={styles.errorText}>{errors.oldPassword}</Text>}
-                    <Text style={styles.label}></Text>
+                    <Text style={styles.label}>
+                        Nuova password
+                    </Text>
+                    <TextInput
+                        style={[
+                            styles.input,
+                            (submitted && errors.newPassword) && styles.inputError
+                        ]}
+                        value={newPassword}
+                        onChangeText={(text) => {
+                            setNewPassword(text)
+                            if (submitted) setErrors({...errors, newPassword: null})
+                        }}
+                        placeholder={"Inserisci la nuova password"}
+                        placeholderTextColor="#aaa"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        secureTextEntry={true}
+                    />
+                    {submitted && errors.newPassword && <Text style={styles.errorText}>{errors.newPassword}</Text>}
+                    <View style={styles.buttonContainer}>
+                        {isLoading ? (
+                            <ActivityIndicator size="large" color="#0064E0" />
+                        ) : (
+                            <TouchableOpacity
+                                style={styles.primaryButton}
+                                onPress={handleSubmit}
+                            >
+                                <Text style={styles.primaryButtonText}>Modifica la password</Text>
+                            </TouchableOpacity>
+                        )
+                        }
+                    </View>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -91,5 +174,23 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         marginLeft: 4,
         fontWeight: '500'
+    },
+    buttonContainer: {
+        marginTop: 30,
+    },
+    primaryButton: {
+        backgroundColor: '#0064E0',
+        paddingVertical: 15,
+        borderRadius: 12,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 15,
+        elevation: 2,
+    },
+
+    primaryButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '600',
     }
 });
