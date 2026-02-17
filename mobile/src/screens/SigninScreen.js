@@ -9,11 +9,12 @@ import {
     View
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {UserContext} from "../context/UserContext";
 
 export default function SigninScreen({ navigation }) {
+    const { user, loginUser, isLoading: isContextLoading } = useContext(UserContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -21,7 +22,24 @@ export default function SigninScreen({ navigation }) {
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const { loginUser } = useContext(UserContext)
+    useEffect(() => {
+        if (user) {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "App" }],
+            });
+        }
+    }, [user]);
+
+    if (isContextLoading) {
+        return (
+            <View style={styles.scrollContainer}>
+                <ActivityIndicator size="large" color="#0064E0" />
+            </View>
+        );
+    }
+
+    if (user) return null
 
     const validateForm = () => {
         let newErrors = {};
@@ -47,7 +65,10 @@ export default function SigninScreen({ navigation }) {
 
                 if (response.data.success) {
                     Alert.alert("Accesso effettuato con successo!");
-                    loginUser(response.data.result)
+                    await loginUser({
+                        ...response.data.result,
+                        token: response.data.token
+                    })
                     navigation.reset({
                         index: 0,
                         routes: [{ name: "App" }],

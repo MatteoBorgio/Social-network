@@ -11,8 +11,8 @@ export default function RootNavigator() {
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="App" component={AppStack} />
             <Stack.Screen name="Auth" component={AuthStack} />
+            <Stack.Screen name="App" component={AppStack} />
         </Stack.Navigator>
     );
 }

@@ -6,6 +6,10 @@ import {MaterialIcons} from "@expo/vector-icons";
 export default function LogoutButton() {
     const { logoutUser } = useContext(UserContext)
 
+    const logout = async () => {
+        await logoutUser()
+    }
+
     const handleLogout = () => {
         Alert.alert(
             "Conferma Logout",
@@ -16,8 +20,13 @@ export default function LogoutButton() {
                     text: "Esci",
                     style: "destructive",
                     onPress: () => {
-                        console.log("Logout completato correttamente")
-                        logoutUser();
+                        try {
+                            logout();
+                            console.log("Logout completato correttamente");
+                        } catch (error) {
+                            console.error("Errore durante il logout:", error);
+                            Alert.alert("Errore", "Impossibile completare il logout.");
+                        }
                     }
                 }
             ],

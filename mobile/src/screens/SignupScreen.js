@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState, useContext, useEffect } from "react"
+import { SafeAreaView } from "react-native-safe-area-context"
 import {
     Alert,
     StyleSheet,
@@ -11,34 +11,52 @@ import {
     Platform,
     ScrollView,
     TouchableOpacity
-} from "react-native";
-import axios from "axios";
+} from "react-native"
+import axios from "axios"
+import { UserContext } from "../context/UserContext"
 
 export default function SignupScreen({ navigation }) {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const { user, isLoading: isContextLoading } = useContext(UserContext)
 
-    const [errors, setErrors] = useState({});
-    const [submitted, setSubmitted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [errors, setErrors] = useState({})
+    const [submitted, setSubmitted] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
+    useEffect(() => {
+        if (user) {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: "App", params: { screen: "Home" } }],
+            });
+        }
+    }, [user])
+
+    if (isContextLoading) {
+        return (
+            <View style={styles.scrollContainer}>
+                <ActivityIndicator size="large" color="#0064E0" />
+            </View>
+        );
+    }
+
+    if (user) return null
 
     const validateForm = () => {
         let newErrors = {};
-
-        if (!username) newErrors.username = "Username richiesto";
-        if (!email) newErrors.email = "Email richiesta";
-        if (!password) newErrors.password = "Password richiesta";
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        if (!username) newErrors.username = "Username richiesto"
+        if (!email) newErrors.email = "Email richiesta"
+        if (!password) newErrors.password = "Password richiesta"
+        setErrors(newErrors)
+        return Object.keys(newErrors).length === 0
     };
 
     const handleSubmit = async () => {
-        setSubmitted(true);
-
+        setSubmitted(true)
         if (validateForm()) {
-            setIsLoading(true);
+            setIsLoading(true)
             try {
                 const response = await axios.post(
                     'http://192.168.1.6:5000/api/auth/signup',
@@ -49,30 +67,14 @@ export default function SignupScreen({ navigation }) {
                     Alert.alert(
                         "Successo",
                         "Account creato con successo! Ora effettua il login.",
-                        [
-                            {
-                                text: "OK",
-                                onPress: () => navigation.navigate('Signin')
-                            }
-                        ]
+                        [{ text: "OK", onPress: () => navigation.navigate('Signin') }]
                     );
                 }
-
             } catch (error) {
-                console.log("Errore Signup:", error);
-
-                let errorMsg = "Si è verificato un errore di connessione";
-
-                if (error.response) {
-                    errorMsg = error.response.data.message;
-                } else if (error.request) {
-                    errorMsg = "Impossibile contattare il server. Controlla il tuo IP e che il server Node sia attivo.";
-                }
-
-                Alert.alert("Errore", errorMsg);
-
+                let errorMsg = error.response?.data?.message || "Errore di connessione al server";
+                Alert.alert("Errore", errorMsg)
             } finally {
-                setIsLoading(false);
+                setIsLoading(false)
             }
         }
     };
@@ -83,65 +85,49 @@ export default function SignupScreen({ navigation }) {
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1 }}
             >
-                <ScrollView
-                    contentContainerStyle={styles.scrollContainer}
-                    keyboardShouldPersistTaps="handled"
-                >
+                <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
                     <Text style={styles.headerTitle}>Crea Account</Text>
 
                     <View style={styles.formContainer}>
-
                         <Text style={styles.label}>Username</Text>
                         <TextInput
-                            style={[
-                                styles.input,
-                                (submitted && errors.username) && styles.inputError
-                            ]}
+                            style={[styles.input, (submitted && errors.username) && styles.inputError]}
                             value={username}
                             onChangeText={(text) => {
                                 setUsername(text);
-                                if (submitted) setErrors({...errors, username: null});
+                                if (submitted) setErrors({ ...errors, username: null });
                             }}
                             placeholder="Inserisci il tuo username"
                             placeholderTextColor="#aaa"
                             autoCapitalize="none"
-                            autoCorrect={false}
                         />
                         {submitted && errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
 
                         <Text style={styles.label}>Email</Text>
                         <TextInput
-                            style={[
-                                styles.input,
-                                (submitted && errors.email) && styles.inputError
-                            ]}
+                            style={[styles.input, (submitted && errors.email) && styles.inputError]}
                             value={email}
                             onChangeText={(text) => {
                                 setEmail(text);
-                                if (submitted) setErrors({...errors, email: null});
+                                if (submitted) setErrors({ ...errors, email: null });
                             }}
                             placeholder="example@gmail.com"
                             placeholderTextColor="#aaa"
                             autoCapitalize="none"
-                            autoCorrect={false}
+                            keyboardType="email-address"
                         />
                         {submitted && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
                         <Text style={styles.label}>Password</Text>
                         <TextInput
-                            style={[
-                                styles.input,
-                                (submitted && errors.password) && styles.inputError
-                            ]}
+                            style={[styles.input, (submitted && errors.password) && styles.inputError]}
                             value={password}
                             onChangeText={(text) => {
                                 setPassword(text);
-                                if (submitted) setErrors({...errors, password: null});
+                                if (submitted) setErrors({ ...errors, password: null });
                             }}
                             placeholder="Inserisci una password"
                             placeholderTextColor="#aaa"
-                            autoCapitalize="none"
-                            autoCorrect={false}
                             secureTextEntry={true}
                         />
                         {submitted && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
@@ -151,10 +137,7 @@ export default function SignupScreen({ navigation }) {
                                 <ActivityIndicator size="large" color="#0064E0" />
                             ) : (
                                 <>
-                                    <TouchableOpacity
-                                        style={styles.primaryButton}
-                                        onPress={handleSubmit}
-                                    >
+                                    <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
                                         <Text style={styles.primaryButtonText}>Registrati</Text>
                                     </TouchableOpacity>
 
@@ -162,9 +145,7 @@ export default function SignupScreen({ navigation }) {
                                         style={styles.secondaryButton}
                                         onPress={() => navigation.navigate('Signin')}
                                     >
-                                        <Text style={styles.secondaryButtonText}>
-                                            Hai già un account? Accedi
-                                        </Text>
+                                        <Text style={styles.secondaryButtonText}>Hai già un account? Accedi</Text>
                                     </TouchableOpacity>
                                 </>
                             )}
