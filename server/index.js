@@ -3,6 +3,7 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const connectDB = require('./config/db')
 const authRouter = require("./routes/authRoutes")
+const postRouter = require("./routes/postRoutes")
 
 const PORT = process.env.PORT
 
@@ -19,6 +20,8 @@ app.use(express.urlencoded({extended: true}))
 connectDB();
 
 app.use('/api/auth', authRouter)
+
+app.use('/api/post', postRouter)
 
 app.get('/', (req, res) => {
     res.send('Server Social Network Attivo');

@@ -45,7 +45,7 @@ exports.signup = async (req, res) => {
         const result = await newUser.save();
         result.password = undefined;
 
-        res
+        return res
             .status(201)
             .json({
                 success: true,
@@ -55,7 +55,7 @@ exports.signup = async (req, res) => {
     }
     catch (error) {
         console.log(error)
-        res
+        return res
             .status(500)
             .json({
                 success: false,
@@ -101,7 +101,7 @@ exports.signin = async (req, res) => {
 
         existingUser.password = undefined
 
-        res.cookie('Authorization', 'Bearer ' + token, {
+        return res.cookie('Authorization', 'Bearer ' + token, {
             expires: new Date(Date.now() + 8 * 3600000),
             httpOnly: process.env.NODE_ENV === 'production',
             secure: process.env.NODE_ENV === 'production'
@@ -113,7 +113,7 @@ exports.signin = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "An error has occurred"
         })
@@ -150,13 +150,13 @@ exports.sendVerificationCode = async (req, res) => {
                 message: 'Code sent!'
             });
         }
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             message: 'Code sent failed!'
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "An error has occurred"
         });
@@ -238,7 +238,7 @@ exports.verifyVerificationCode = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "An error has occured"
         });
@@ -307,13 +307,13 @@ exports.me = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             user
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             message: "An error has occurred"
         });

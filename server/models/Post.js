@@ -1,18 +1,27 @@
-const mongoose = require('mongoose')
+const {Schema, model} = require('mongoose')
 
-const postSchema = mongoose.Schema({
+const postSchema = new Schema({
     title: {
         type: String,
         require: [true, 'Title is required'],
         trim: true,
     },
+    image: {
+      type: String,
+      require: [true, 'Image url is required']
+    },
     description: {
         type: String,
-        require: [true, 'Description is required'],
         trim: true,
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
+    likes: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    user: {
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: [true, 'UserId is required'],
     }
@@ -21,4 +30,4 @@ const postSchema = mongoose.Schema({
     timestamps: true
 });
 
-module.exports = mongoose.model('Posts', postSchema)
+module.exports = model('Posts', postSchema)
