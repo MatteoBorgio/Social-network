@@ -36,7 +36,7 @@ exports.getPosts = async (req, res) => {
             .populate('user', 'username email profilePicture');
         return res.status(200).json({
             success: true,
-            posts: posts
+            results: posts
         })
     } catch (error) {
         console.log(error)
