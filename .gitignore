@@ -35,6 +35,9 @@ coverage
 # Vitest
 __screenshots__/
 
+/uploads/profiles/*
+!/uploads/profiles/.gitkeep
+
 # Vite
 *.timestamp-*-*.mjs
 /server/node_modules/.bin/bcrypt

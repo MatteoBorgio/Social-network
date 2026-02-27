@@ -1,4 +1,5 @@
 const { Schema, model} = require('mongoose')
+const {boolean} = require("joi");
 
 const userSchema = new Schema({
     username: {
@@ -21,6 +22,10 @@ const userSchema = new Schema({
         select: false,
         trim: true
     },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    },
     followers: {
         type: [Schema.Types.ObjectId],
         ref: 'User'
@@ -30,20 +35,16 @@ const userSchema = new Schema({
         ref: 'User'
     },
     profilePicture: {
-        type: String
+        type: String,
+        default: ""
     },
     coverPicture: {
         type: String
     },
     desc: {
-        type: String
-    },
-    city: {
-        type: String
-    },
-    isAdmin: {
-        type: Boolean,
-        default: false
+        type: String,
+        default: "",
+        maxLength: [150, 'Bio cannot exceed 150 characters']
     },
     verified: {
         type: Boolean,

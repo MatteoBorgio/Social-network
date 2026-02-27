@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 const cookieParser = require('cookie-parser')
 const connectDB = require('./config/db')
 const authRouter = require("./routes/authRoutes")
@@ -16,6 +17,7 @@ app.use(cors({
 }));
 app.use(cookieParser())
 app.use(express.urlencoded({extended: true}))
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 connectDB();
 

@@ -64,6 +64,50 @@ exports.signup = async (req, res) => {
     }
 }
 
+exports.createProfile = async (req, res) => {
+    try {
+        const {userId} = req.user;
+        const {desc} = req.body;
+
+        let profilePicPath = "";
+        if (req.file) {
+            profilePicPath = req.file.path;
+        }
+
+        const updateUser = await User.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    desc: desc,
+                    profilePicture: profilePicPath,
+                    isCompleted: true
+                }
+            },
+            {new: true, runValidators: true}
+        );
+
+        if (!updateUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            results: updateUser,
+            message: "User updated"
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "An error has occured",
+            error: error
+        });
+    }
+};
+
 exports.signin = async (req, res) => {
     const { email, password } = req.body
     try {
