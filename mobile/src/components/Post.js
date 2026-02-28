@@ -11,17 +11,20 @@ export default function Post({ post }) {
 
     const handleClick = async () => {
         const previousCount = likesCount;
+        const newIsLiked = !isLiked;
 
-        setIsLiked(!isLiked);
-        setLikesCount(isLiked ? likesCount + -1 : likesCount + 1);
+        setIsLiked(newIsLiked);
+        setLikesCount(newIsLiked ? likesCount + 1 : likesCount - 1);
 
         try {
-            await axios.put(`http://192.168.1.6:5000/api/post/${post._id}/like`, {
-                userId: user._id
+            await axios.put(`http://192.168.1.6:5000/api/post/${post._id}/like`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
             });
         } catch (error) {
-            console.log("Errore durante il like: ", error);
-            setIsLiked(!isLiked);
+            console.log("Errore durante il like:", error.response?.data || error.message);
+            setIsLiked(!newIsLiked);
             setLikesCount(previousCount);
         }
     }

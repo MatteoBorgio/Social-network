@@ -16,7 +16,7 @@ import axios from "axios"
 import { UserContext } from "../context/UserContext"
 
 export default function SignupScreen({ navigation }) {
-    const { user, isLoading: isContextLoading } = useContext(UserContext)
+    const { user, isLoading: isContextLoading, loginUser } = useContext(UserContext)
 
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
@@ -26,13 +26,13 @@ export default function SignupScreen({ navigation }) {
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
-        if (user) {
+        if (user && !submitted) {
             navigation.reset({
                 index: 0,
                 routes: [{ name: "App", params: { screen: "Home" } }],
             });
         }
-    }, [user])
+    }, [user, submitted])
 
     if (isContextLoading) {
         return (
@@ -64,10 +64,14 @@ export default function SignupScreen({ navigation }) {
                 );
 
                 if (response.data.success) {
+                    if (response.data.result && response.data.token) {
+                        await loginUser({ ...response.data.result, token: response.data.token });
+                    }
+
                     Alert.alert(
                         "Successo",
-                        "Account creato con successo! Ora effettua il login.",
-                        [{ text: "OK", onPress: () => navigation.navigate('Signin') }]
+                        "Account creato con successo! Ora completa il tuo profilo.",
+                        [{ text: "OK", onPress: () => navigation.navigate('CreateProfile') }]
                     );
                 }
             } catch (error) {
@@ -210,7 +214,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         marginTop: 30,
     },
-
     primaryButton: {
         backgroundColor: '#0064E0',
         paddingVertical: 15,
@@ -220,13 +223,11 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         elevation: 2,
     },
-
     primaryButtonText: {
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '600',
     },
-
     secondaryButton: {
         borderWidth: 1.5,
         borderColor: '#0064E0',
@@ -235,7 +236,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-
     secondaryButtonText: {
         color: '#0064E0',
         fontSize: 15,

@@ -1,16 +1,24 @@
 import { ActivityIndicator, FlatList, View, StyleSheet } from "react-native"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import axios from "axios"
 import Post from "./Post"
+import { UserContext } from "../context/UserContext"
 
 export default function Posts() {
     const [posts, setPosts] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
+    const { user } = useContext(UserContext)
+
     const getPosts = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('http://192.168.1.6:5000/api/post/get-all-posts')
+            const response = await axios.get('http://192.168.1.6:5000/api/post/get-all-posts', {
+                headers: {
+                    Authorization: `Bearer ${user?.token}`
+                }
+            })
+
             if (response.data.success) {
                 const data = response.data.results
                 setPosts(data)
@@ -18,15 +26,17 @@ export default function Posts() {
                 throw new Error(response.data.error)
             }
         } catch (error) {
-            console.log(error)
+            console.log("Errore nel recupero dei post:", error.response?.data || error.message)
         } finally {
             setIsLoading(false)
         }
     };
 
     useEffect(() => {
-        getPosts()
-    }, [])
+        if (user?.token) {
+            getPosts()
+        }
+    }, [user?.token])
 
     if (isLoading && posts.length === 0) {
         return (

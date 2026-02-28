@@ -3,41 +3,36 @@ const jwt = require('jsonwebtoken')
 exports.identifier = (req, res, next) => {
     let token;
 
-    if (req.headers.client === "not-browser") {
-        token = req.headers.authorization
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        token = req.headers.authorization;
     }
-    else {
-        token = req.cookies['Authorization']
+    else if (req.cookies && req.cookies['Authorization']) {
+        token = req.cookies['Authorization'];
     }
 
     if (!token) {
-        return res
-            .status(401)
-            .json({
-                success: false,
-                message: 'Unauthorized'
-            })
+        return res.status(401).json({
+            success: false,
+            message: 'Unauthorized'
+        });
     }
 
     try {
-        const userToken = token.split(' ')[1]
-        const jwtVerified = jwt.verify(userToken, process.env.TOKEN_SECRET)
+        const userToken = token.includes(' ') ? token.split(' ')[1] : token;
+
+        const jwtVerified = jwt.verify(userToken, process.env.TOKEN_SECRET);
 
         if (jwtVerified) {
-            req.user = jwtVerified
-            next()
+            req.user = jwtVerified;
+            next();
+        } else {
+            throw new Error('Error in the token');
         }
-        else {
-            throw new Error('Error in the token')
-        }
-    }
-    catch (error) {
-        console.log(error)
-        res
-            .status(500)
-            .json({
-                success: false,
-                message: "An error has occurred"
-            })
+    } catch (error) {
+        console.log("Errore JWT:", error.message);
+        return res.status(401).json({
+            success: false,
+            message: "Token non valido o scaduto"
+        });
     }
 }

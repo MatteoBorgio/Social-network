@@ -45,12 +45,22 @@ exports.signup = async (req, res) => {
         const result = await newUser.save();
         result.password = undefined;
 
+        const token = jwt.sign(
+            {
+                userId: result._id,
+                email: result.email
+            },
+            process.env.TOKEN_SECRET,
+            { expiresIn: '8h' }
+        );
+
         return res
             .status(201)
             .json({
                 success: true,
                 message: 'Your account has been created successfully',
-                result
+                result,
+                token: token
             })
     }
     catch (error) {
