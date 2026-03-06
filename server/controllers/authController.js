@@ -1,11 +1,21 @@
+/**
+ * Controller for user verification and creation of the user profile
+ * Includes the change password functionality and the verification code procedure
+ */
+
 const {signupSchema, signinSchema, acceptCodeSchema, changePasswordSchema} = require("../middlewares/validator");
 const User = require("../models/User")
 const {doHash, doHashValidation, hmacProcess} = require("../utils/hashing");
 const jwt = require('jsonwebtoken')
 const transport = require("../middlewares/sendMail");
 
+/**
+ * Register a new user
+ * Validate the user request and hashes the password before sending back the data
+ * @returns {Object} Json response with the user data and the jwt token
+ */
 exports.signup = async (req, res) => {
-    const {email, password, username} = req.body;
+    const { email, password, username } = req.body;
     try {
         const {error, value} = signupSchema.validate({email, password, username})
 
@@ -51,7 +61,7 @@ exports.signup = async (req, res) => {
                 email: result.email
             },
             process.env.TOKEN_SECRET,
-            { expiresIn: '8h' }
+            { expiresIn: '48h' }
         );
 
         return res
@@ -74,6 +84,11 @@ exports.signup = async (req, res) => {
     }
 }
 
+/**
+ * Complete the user profile by adding a description and a profile picture
+ * Requires and authenticated user
+ * @returns {Object} Json response with the updated user data
+ */
 exports.createProfile = async (req, res) => {
     try {
         const {userId} = req.user;
@@ -112,12 +127,16 @@ exports.createProfile = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            message: "An error has occured",
+            message: "An error has occurred",
             error: error
         });
     }
 };
 
+/**
+ * Authenticates an existing user and set a jwt cookie
+ * @returns {Object} Json response with token and user data
+ */
 exports.signin = async (req, res) => {
     const { email, password } = req.body
     try {
@@ -156,7 +175,7 @@ exports.signin = async (req, res) => {
         existingUser.password = undefined
 
         return res.cookie('Authorization', 'Bearer ' + token, {
-            expires: new Date(Date.now() + 8 * 3600000),
+            expires: new Date(Date.now() + 48 * 3600000),
             httpOnly: process.env.NODE_ENV === 'production',
             secure: process.env.NODE_ENV === 'production'
         }).json({
@@ -174,6 +193,10 @@ exports.signin = async (req, res) => {
     }
 }
 
+/**
+ * Generates a 6-digit verification code via mail, and save the hashed code in the database
+ * @returns {Object} Json response with success or failure
+ */
 exports.sendVerificationCode = async (req, res) => {
     const { email } = req.body;
 
@@ -196,6 +219,7 @@ exports.sendVerificationCode = async (req, res) => {
         });
 
         if (info.accepted[0] === existingUser.email) {
+            // for security purpose, only the hmac hash of the code is saved
             existingUser.verificationCode = hmacProcess(codeValue, process.env.HMAC_VERIFICATION_CODE_SECRET);
             existingUser.verificationCodeValidation = Date.now();
             await existingUser.save();
@@ -217,6 +241,10 @@ exports.sendVerificationCode = async (req, res) => {
     }
 };
 
+/**
+ * Validates the verification code provided by the user
+ * @returns {Object} Json response like the one in the signin functionality
+ */
 exports.verifyVerificationCode = async (req, res) => {
     const { email, providedCode } = req.body;
     try {
@@ -245,6 +273,7 @@ exports.verifyVerificationCode = async (req, res) => {
             });
         }
 
+        // check if code has expired (5 minutes time limit)
         if (Date.now() - existingUser.verificationCodeValidation > 5 * 60 * 1000) {
             return res.status(401).json({
                 success: false,
@@ -265,14 +294,14 @@ exports.verifyVerificationCode = async (req, res) => {
                 email: existingUser.email,
                 verified: existingUser.verified
             }, process.env.TOKEN_SECRET, {
-                expiresIn: '8h'
+                expiresIn: '48h'
             });
 
             existingUser.password = undefined;
 
             return res
                 .cookie('Authorization', 'Bearer ' + token, {
-                    expires: new Date(Date.now() + 8 * 3600000),
+                    expires: new Date(Date.now() + 48 * 3600000),
                     httpOnly: process.env.NODE_ENV === 'production',
                     secure: process.env.NODE_ENV === 'production'
                 })
@@ -294,11 +323,17 @@ exports.verifyVerificationCode = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             success: false,
-            message: "An error has occured"
+            message: "An error has occurred"
         });
     }
 };
 
+/**
+ * Change user password
+ * Requires the user to be authenticated and verified
+ * Requires the user old password
+ * @returns {Object} Json response with the data without the password
+ */
 exports.changePassword = async (req, res) => {
     const { userId } = req.user;
     const { oldPassword, newPassword } = req.body;
@@ -342,10 +377,19 @@ exports.changePassword = async (req, res) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).json({ success: false, message: "An error has occured" });
+        res
+            .status(500)
+            .json({
+                success: false,
+                message: "An error has occured"
+            });
     }
 }
 
+/**
+ * Return the profile information for the authenticated user in the session
+ * @returns {Object} Json response with basics user information (like email, id and username)
+ */
 exports.me = async (req, res) => {
     try {
         const { userId } = req.user;
