@@ -2,18 +2,25 @@ const Post = require('../models/Post')
 
 exports.createPost = async (req, res) => {
     console.log("Dati utente dal token:", req.user)
-    const { title, image, description } = req.body
+
+    const { title, description } = req.body
+
+    let imagePath = null;
+    if (req.file) {
+        imagePath = req.file.path;
+    }
+
     try {
         const newPost = new Post({
             title,
-            image,
+            image: imagePath,
             description,
             user: req.user.userId
         })
 
         const savedPost = await newPost.save()
 
-        await savedPost.populate('user', 'user profilePicture')
+        await savedPost.populate('user', 'username email profilePicture')
 
         return res.status(200).json({
             success: true,
@@ -24,7 +31,7 @@ exports.createPost = async (req, res) => {
         console.log(error)
         return res.status(500).json({
             success: false,
-            error: error
+            error: error.message
         })
     }
 }

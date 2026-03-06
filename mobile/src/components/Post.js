@@ -1,6 +1,6 @@
-import {Text, View, Image, StyleSheet, TouchableOpacity} from "react-native"
-import {useContext, useState} from "react";
-import {UserContext} from "../context/UserContext";
+import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native"
+import { useContext, useState } from "react";
+import { UserContext } from "../context/UserContext";
 import axios from "axios";
 
 export default function Post({ post }) {
@@ -8,6 +8,14 @@ export default function Post({ post }) {
 
     const [isLiked, setIsLiked] = useState(post.likes?.includes(user?._id) || false)
     const [likesCount, setLikesCount] = useState(post.likes ? post.likes.length : 0);
+
+    const avatarUri = post.user?.profilePicture
+        ? `http://192.168.1.6:5000/${post.user.profilePicture.replace(/\\/g, '/')}`
+        : 'https://via.placeholder.com/150';
+
+    const postImageUri = post.image
+        ? `http://192.168.1.6:5000/${post.image.replace(/\\/g, '/')}`
+        : null;
 
     const handleClick = async () => {
         const previousCount = likesCount;
@@ -28,13 +36,12 @@ export default function Post({ post }) {
             setLikesCount(previousCount);
         }
     }
+
     return (
         <View style={styles.card}>
             <View style={styles.header}>
                 <Image
-                    source={{
-                        uri: post.user?.profilePicture || 'https://via.placeholder.com/150'
-                    }}
+                    source={{ uri: avatarUri }}
                     style={styles.avatar}
                 />
                 <Text style={styles.username}>
@@ -47,9 +54,9 @@ export default function Post({ post }) {
                 {post.description ? <Text style={styles.description}>{post.description}</Text> : null}
             </View>
 
-            {post.image ? (
+            {postImageUri ? (
                 <Image
-                    source={{ uri: post.image }}
+                    source={{ uri: postImageUri }}
                     style={styles.postImage}
                     resizeMode="cover"
                 />

@@ -3,6 +3,7 @@ import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import SettingsIcon from "../components/SettingsIcon";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
+import CreatePost from "../screens/CreatePost";
 
 const Stack = createNativeStackNavigator()
 
@@ -20,6 +21,11 @@ export default function AppStack() {
             }}></Stack.Screen>
             <Stack.Screen name={"ChangePassword"} component={ChangePasswordScreen} options={{
                 title: "ChangePassword",
+                headerTitle: "",
+                headerShown: true
+            }}></Stack.Screen>
+            <Stack.Screen name={"CreatePost"} component={CreatePost} options={{
+                title: "CreatePost",
                 headerTitle: "",
                 headerShown: true
             }}></Stack.Screen>
