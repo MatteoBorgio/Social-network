@@ -1,5 +1,16 @@
+/**
+ * Controller for the upload and delete of posts
+ * Includes create and delete post functionality
+ * Includes the like toggle functionality
+ */
+
 const Post = require('../models/Post')
 
+/**
+ * Save a new post in the database
+ * Require a valid userId
+ * @returns {Object} Json response with the post information
+ */
 exports.createPost = async (req, res) => {
     console.log("Dati utente dal token:", req.user)
 
@@ -36,6 +47,11 @@ exports.createPost = async (req, res) => {
     }
 }
 
+/**
+ * Get all the post in the database
+ * @returns {Object} Json response with the object which contains all the information
+ * about the posts
+ */
 exports.getPosts = async (req, res) => {
     try {
         const posts = await Post.find()
@@ -54,6 +70,11 @@ exports.getPosts = async (req, res) => {
     }
 }
 
+/**
+ * Add a like in a post, push the userId in the post likes in the database
+ * Requires a valid userId
+ * @returns {Object} Json response with a success or fail message
+ */
 exports.likePost = async (req, res) => {
     try {
         const postId = req.params.id
@@ -89,6 +110,11 @@ exports.likePost = async (req, res) => {
     }
 }
 
+/**
+ * Delete a post
+ * Requires the userId of the owner of the post
+ * @returns {Object} Json response with a success or fail message
+ */
 exports.deletePost = async (req, res) => {
     try {
         const postId = req.params.id
