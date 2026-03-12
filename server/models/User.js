@@ -1,5 +1,9 @@
+/**
+ * Model for the definition of the characteristic
+ * of a user object in the mongoDB database
+ */
+
 const { Schema, model} = require('mongoose')
-const {boolean} = require("joi");
 
 const userSchema = new Schema({
     username: {

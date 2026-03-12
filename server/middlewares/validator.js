@@ -1,5 +1,13 @@
+/**
+ * Middleware for the validation of the data using joi
+ * before storing them in the database
+ */
+
 const joi = require('joi')
 
+/**
+ * Schema for the validation of the user data for the signup
+ */
 exports.signupSchema = joi.object({
     email: joi
         .string()
@@ -20,6 +28,9 @@ exports.signupSchema = joi.object({
         .max(50)
 })
 
+/**
+ * Schema for validation of the user data for the login
+ */
 exports.signinSchema = joi.object({
     email: joi
         .string()
@@ -35,6 +46,9 @@ exports.signinSchema = joi.object({
         .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$'))
 })
 
+/**
+ * Schema for the validation of the verification code data
+ */
 exports.acceptCodeSchema = joi.object({
         email: joi
             .string()
@@ -50,6 +64,10 @@ exports.acceptCodeSchema = joi.object({
     }
 )
 
+/**
+ * Schema for the validation of the passwords provided
+ * for the change password functionality
+ */
 exports.changePasswordSchema = joi.object({
     newPassword: joi
         .string()

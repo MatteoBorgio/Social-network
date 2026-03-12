@@ -1,3 +1,8 @@
+/**
+ * Model for the definition of the characteristic
+ * of a post object in the mongoDB database
+ */
+
 const {Schema, model} = require('mongoose')
 
 const postSchema = new Schema({

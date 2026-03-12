@@ -1,3 +1,11 @@
+/**
+ * Container for all the routes inherent to the auth
+ * Includes the routes for the signup, signin,
+ * verification code functionality, change password
+ * functionality, and create profile functionality
+ * Manage the middlewares for uploading and identify user
+ */
+
 const express = require('express')
 const authController = require('../controllers/authController')
 const {identifier} = require("../middlewares/identification");

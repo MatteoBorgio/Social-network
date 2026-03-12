@@ -1,6 +1,16 @@
+/**
+ * Configuration for multer middleware to handle image uploads
+ * Set up storage engine, file validation and size limits
+ */
+
 const multer = require('multer');
 const path = require('path');
 
+/**
+ * Configure storage settings for uploaded files
+ * Stores the file locally in the 'uploads/profiles/' directory
+ * Guarantees unique file names
+ */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/profiles/');
@@ -11,6 +21,9 @@ const storage = multer.diskStorage({
     }
 });
 
+/**
+ * Filter files to ensure the upload of only image files
+ */
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -19,6 +32,9 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
+/**
+ * Initialize multer with storage, filter and file limits
+ */
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,

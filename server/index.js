@@ -1,3 +1,9 @@
+/**
+ * Main file of the application
+ * Contains all the routes and initialize the server
+ * Manage the connection to the database and the static assets
+ */
+
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
