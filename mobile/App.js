@@ -1,3 +1,7 @@
+/**
+ * Main file of the app with all the routes of the application
+ */
+
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { UserProvider } from "./src/context/UserContext";

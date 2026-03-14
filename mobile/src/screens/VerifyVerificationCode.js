@@ -1,3 +1,9 @@
+/**
+ * File for the screen that handles the insertion
+ * of the verification code received from user
+ * Renders a form which takes the provided code
+ */
+
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useState} from "react";
@@ -10,6 +16,7 @@ export default function VerifyVerificationCode({ navigation }) {
     const [errors, setErrors] = useState({})
     const [providedCode, setProvidedCode] = useState("")
 
+    //
     const {temporaryEmail, nullifyTemporaryEmail} = useContext(TemporaryEmailContext)
     const { loginUser } = useContext(UserContext)
 
