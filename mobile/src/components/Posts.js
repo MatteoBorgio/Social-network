@@ -1,3 +1,8 @@
+/**
+ * File for the render of all the posts in the home page
+ * Needs a verified user and a valid token
+ */
+
 import { ActivityIndicator, FlatList, View, StyleSheet } from "react-native"
 import { useEffect, useState, useContext } from "react"
 import axios from "axios"

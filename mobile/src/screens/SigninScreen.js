@@ -1,5 +1,12 @@
+/**
+ * File for the screen that handles the signin process
+ * from the un-verified user
+ * Renders a form which takes the email and the password
+ * of the existing user account
+ */
+
 import {
-    ActivityIndicator, Alert, Button,
+    ActivityIndicator, Alert,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
@@ -22,6 +29,7 @@ export default function SigninScreen({ navigation }) {
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // if user exist, take back the user to the Home
     useEffect(() => {
         if (user) {
             navigation.reset({
@@ -65,6 +73,7 @@ export default function SigninScreen({ navigation }) {
 
                 if (response.data.success) {
                     Alert.alert("Accesso effettuato con successo!");
+                    // create a new token for the user
                     await loginUser({
                         ...response.data.result,
                         token: response.data.token

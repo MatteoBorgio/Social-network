@@ -1,3 +1,10 @@
+/**
+ * File for the screen that handles the creation of a new post
+ * from a verified user
+ * Renders a form which takes a title, a description
+ * and a post image (using Image Picker)
+ */
+
 import React, { useContext, useState } from "react";
 import {
     Alert,
@@ -25,7 +32,6 @@ export default function CreatePost({ navigation }) {
     const [postImage, setPostImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    // Funzione per selezionare l'immagine dalla galleria
     const pickImage = async () => {
         let permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permission.granted === false) {
@@ -57,6 +63,7 @@ export default function CreatePost({ navigation }) {
         if (title) formData.append('title', title);
         if (description) formData.append('description', description);
 
+        // saves the picture in a local directory named uploads
         if (postImage) {
             const uri = postImage.uri;
             const fileName = uri.split('/').pop() || `post_${Date.now()}.jpg`;

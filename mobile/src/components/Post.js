@@ -1,3 +1,11 @@
+/**
+ * File for the render of a single post
+ * Used in the posts file
+ * Handles the likes of the post and the render
+ * of the profilePic and post image
+ * Needs a verified user and a valid token
+ */
+
 import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native"
 import { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";

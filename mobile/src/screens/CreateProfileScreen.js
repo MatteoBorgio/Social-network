@@ -1,3 +1,10 @@
+/**
+ * File for the screen that handles the creation
+ * of the profile from a verified user
+ * Renders a form which takes a picture from
+ * the user gallery (using image picker) and a bio
+ */
+
 import React, {useContext, useState} from "react";
 import {
     Alert,
@@ -17,7 +24,7 @@ import { UserContext } from "../context/UserContext";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 
-export default function ProfileScreen({ navigation }) {
+export default function CreateProfileScreen({ navigation }) {
     const { user, loginUser, isLoading: isContextLoading } = useContext(UserContext);
 
     const [profilePic, setProfilePic] = useState(null);
@@ -73,6 +80,7 @@ export default function ProfileScreen({ navigation }) {
 
         formData.append('desc', bio);
 
+        // saves the pic in a local directory named uploads
         if (profilePic) {
             const uri = profilePic.uri;
             const fileName = uri.split('/').pop() || `profile_${Date.now()}.jpg`;

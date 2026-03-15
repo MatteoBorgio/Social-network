@@ -1,3 +1,8 @@
+/**
+ * Button that handles the logout procedure
+ * Used in settings screen
+ */
+
 import {Alert, TouchableOpacity, StyleSheet} from "react-native";
 import {useContext} from "react";
 import {UserContext} from "../context/UserContext";

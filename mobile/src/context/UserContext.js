@@ -1,4 +1,12 @@
+/**
+ * File for the context which contains all
+ * the user data locally stored in the application
+ * Provides all the function for modify the user data
+ * inside the application
+ */
+
 import { createContext, useState, useEffect } from "react";
+// using a storage locally stored in the device
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const UserContext = createContext(undefined);

@@ -1,3 +1,10 @@
+/**
+ * File for the screen that handles the signup process
+ * from the un-verified user
+ * Renders a form which takes the username, the email
+ * and the password of the new user
+ */
+
 import React, { useState, useContext, useEffect } from "react"
 import { SafeAreaView } from "react-native-safe-area-context"
 import {
@@ -25,6 +32,7 @@ export default function SignupScreen({ navigation }) {
     const [submitted, setSubmitted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
+    // if user exist, take back the user to the Home
     useEffect(() => {
         if (user && !submitted) {
             navigation.reset({
@@ -71,6 +79,8 @@ export default function SignupScreen({ navigation }) {
                     Alert.alert(
                         "Successo",
                         "Account creato con successo! Ora completa il tuo profilo.",
+                        // after the signup, user must create a new profile before
+                        // going to the home page
                         [{ text: "OK", onPress: () => navigation.navigate('CreateProfile') }]
                     );
                 }

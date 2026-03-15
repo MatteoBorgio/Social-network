@@ -1,3 +1,9 @@
+/**
+ * File for the context used to store a email
+ * used for the verification code procedure
+ * between the sendCode and verifyCode screens
+ */
+
 import {createContext, useState} from "react";
 
 export const TemporaryEmailContext = createContext(undefined)

@@ -1,3 +1,8 @@
+/**
+ * Icon for the creation of a post
+ * Used in the bottom-right of the home page
+ */
+
 import React from 'react';
 import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';

@@ -1,3 +1,9 @@
+/**
+ * File for the screen that handles the request for
+ * a verification code from the user
+ * Renders a form which takes the email of the user
+ */
+
 import {Alert, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useState} from "react";
@@ -9,6 +15,7 @@ export default function SendVerificationCodeScreen({navigation}) {
     const [submitted, setSubmitted] = useState(false)
     const [errors, setErrors] = useState({})
 
+    // context for providing the temporary email to the VerifyVerificationCode
     const { changeTemporaryEmail } = useContext(TemporaryEmailContext)
 
     const validateForm = () => {

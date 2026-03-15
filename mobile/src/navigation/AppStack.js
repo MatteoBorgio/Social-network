@@ -1,3 +1,7 @@
+/**
+ * File for the routes that handles the main screens for the app
+ */
+
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -9,6 +13,7 @@ const Stack = createNativeStackNavigator()
 
 export default function AppStack() {
     return (
+        // for this stack, the headers are all shown
         <Stack.Navigator>
             <Stack.Screen name={"Home"} component={HomeScreen} options={{
                 title: "Home",

@@ -1,3 +1,9 @@
+/**
+ * File for the Home page
+ * Request all the posts and renders them, if the user is verified
+ * Show all the routing options for the user
+ */
+
 import { useEffect, useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { UserContext } from "../context/UserContext";
@@ -7,6 +13,7 @@ import CreatePostIcon from "../components/CreatePostIcon";
 export default function HomeScreen({ navigation }) {
     const { user } = useContext(UserContext);
 
+    // if user doesn't exist, redirect to the signup screen
     useEffect(() => {
         if (!user) {
             navigation.reset({

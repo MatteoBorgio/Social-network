@@ -1,3 +1,10 @@
+/**
+ * File for the screen that handles the changing password process
+ * from a verified user
+ * Renders a form which takes the old password and the new
+ * Need a valid user token
+ */
+
 import {ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useState} from "react";
@@ -39,6 +46,7 @@ export default function ChangePasswordScreen({ navigation }) {
                     }
                 );
 
+                // redirect not directly to the home, but to the latest app routes opened
                 if (response.data.success) {
                     Alert.alert("Password modificata con successo!");
                     loginUser(response.data.updatedUser)

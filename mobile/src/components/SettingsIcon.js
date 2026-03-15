@@ -1,3 +1,7 @@
+/**
+ * Setting icons used in the header-right of the home page
+ */
+
 import {StyleSheet, TouchableOpacity} from "react-native";
 import {MaterialIcons} from "@expo/vector-icons";
 import {useNavigation} from "@react-navigation/native";

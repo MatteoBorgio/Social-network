@@ -16,7 +16,7 @@ export default function VerifyVerificationCode({ navigation }) {
     const [errors, setErrors] = useState({})
     const [providedCode, setProvidedCode] = useState("")
 
-    //
+    // context for re-using the email provided in the SendVerificationScreen
     const {temporaryEmail, nullifyTemporaryEmail} = useContext(TemporaryEmailContext)
     const { loginUser } = useContext(UserContext)
 

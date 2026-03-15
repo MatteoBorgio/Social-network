@@ -1,3 +1,9 @@
+/**
+ * File for managing the settings
+ * Renders a list of the settings and the
+ * possible action of the user
+ */
+
 import {View, StyleSheet, TouchableOpacity, Text} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import LogoutButton from "../components/LogoutButton";
