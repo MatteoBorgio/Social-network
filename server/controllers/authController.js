@@ -1,3 +1,5 @@
+const fs = require("fs").promises;
+
 /**
  * Controller for user verification and creation of the user profile
  * Includes the change password functionality and the verification code procedure
@@ -132,6 +134,54 @@ exports.createProfile = async (req, res) => {
         });
     }
 };
+
+/**
+ * Change the user profile picture using multer middleware
+ * Requires and authenticated user
+ * Use fs.unlink for the deletion of the old profile picture
+ * @returns {Object} Json response with the updated user profile picture
+ */
+exports.changeProfilePic = async (req, res) => {
+    const {userId} = req.user;
+
+    let profilePicPath = "";
+    if (req.file) {
+        profilePicPath = req.file.path;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+        return res
+            .status(404)
+            .json({
+                success: false,
+                message: "Utente non trovato."
+            });
+    }
+
+    const oldProfilePic = user.profilePicture;
+
+    if (oldProfilePic && oldProfilePic !== "") {
+        try {
+            await fs.unlink(oldProfilePic);
+            console.log('Vecchia foto eliminata con successo:', oldProfilePic);
+        } catch (err) {
+            console.warn('Impossibile eliminare la vecchia foto, forse non esiste fisicamente:', err.message);
+        }
+    }
+
+    user.profilePicture = profilePicPath;
+
+    await user.save();
+
+    return res
+        .status(200)
+        .json({
+            success: true,
+            newProfilePic: profilePicPath
+        })
+
+}
 
 /**
  * Authenticates an existing user and set a jwt cookie
