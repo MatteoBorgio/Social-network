@@ -10,7 +10,6 @@ const User = require("../models/User")
 const {doHash, doHashValidation, hmacProcess} = require("../utils/hashing");
 const jwt = require('jsonwebtoken')
 const transport = require("../middlewares/sendMail");
-const {json} = require("express");
 
 /**
  * Register a new user
@@ -18,9 +17,10 @@ const {json} = require("express");
  * @returns {Object} Json response with the user data and the jwt token
  */
 exports.signup = async (req, res) => {
-    const { email, password, username } = req.body;
     try {
-        const {error, value} = signupSchema.validate({email, password, username})
+        const { email, password, username } = req.body;
+
+        const {error} = signupSchema.validate({email, password, username})
 
         if (error) {
             return res
@@ -143,45 +143,53 @@ exports.createProfile = async (req, res) => {
  * @returns {Object} Json response with the updated user profile picture
  */
 exports.changeProfilePic = async (req, res) => {
-    const {userId} = req.user;
+    try {
+        const {userId} = req.user;
 
-    let profilePicPath = "";
-    if (req.file) {
-        profilePicPath = req.file.path;
-    }
-
-    const user = await User.findById(userId);
-    if (!user) {
-        return res
-            .status(404)
-            .json({
-                success: false,
-                message: "Utente non trovato."
-            });
-    }
-
-    const oldProfilePic = user.profilePicture;
-
-    if (oldProfilePic && oldProfilePic !== "") {
-        try {
-            await fs.unlink(oldProfilePic);
-            console.log('Vecchia foto eliminata con successo:', oldProfilePic);
-        } catch (err) {
-            console.warn('Impossibile eliminare la vecchia foto, forse non esiste fisicamente:', err.message);
+        let profilePicPath = "";
+        if (req.file) {
+            profilePicPath = req.file.path;
         }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res
+                .status(404)
+                .json({
+                    success: false,
+                    message: "Utente non trovato."
+                });
+        }
+
+        const oldProfilePic = user.profilePicture;
+
+        if (oldProfilePic && oldProfilePic !== "") {
+            try {
+                await fs.unlink(oldProfilePic);
+                console.log('Vecchia foto eliminata con successo:', oldProfilePic);
+            } catch (err) {
+                console.warn('Impossibile eliminare la vecchia foto, forse non esiste fisicamente:', err.message);
+            }
+        }
+
+        user.profilePicture = profilePicPath;
+
+        await user.save();
+
+        return res
+            .status(200)
+            .json({
+                success: true,
+                newProfilePic: profilePicPath
+            });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "An error has occurred",
+            error: error
+        });
     }
-
-    user.profilePicture = profilePicPath;
-
-    await user.save();
-
-    return res
-        .status(200)
-        .json({
-            success: true,
-            newProfilePic: profilePicPath
-        })
-
 }
 
 /**
@@ -212,6 +220,15 @@ exports.changeBio = async (req, res) => {
                     success: false,
                     message: "Utente non trovato."
                 });
+        }
+
+        if (desc.length > 150) {
+            return res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "La descrizione eccede i 150 caratteri"
+                })
         }
 
         user.desc = desc;
@@ -300,8 +317,9 @@ exports.changeUsername = async (req, res) => {
  * @returns {Object} Json response with token and user data
  */
 exports.signin = async (req, res) => {
-    const { email, password } = req.body
     try {
+        const { email, password } = req.body
+
         const { error } = signinSchema.validate({ email, password })
         if (error) {
             return res.status(401).json({
@@ -360,9 +378,9 @@ exports.signin = async (req, res) => {
  * @returns {Object} Json response with success or failure
  */
 exports.sendVerificationCode = async (req, res) => {
-    const { email } = req.body;
-
     try {
+        const { email } = req.body;
+
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
             return res.status(404).json({
@@ -408,8 +426,9 @@ exports.sendVerificationCode = async (req, res) => {
  * @returns {Object} Json response like the one in the signin functionality
  */
 exports.verifyVerificationCode = async (req, res) => {
-    const { email, providedCode } = req.body;
     try {
+        const { email, providedCode } = req.body;
+
         const { error, value } = acceptCodeSchema.validate({ email, providedCode });
         if (error) {
             return res.status(401).json({
@@ -497,10 +516,10 @@ exports.verifyVerificationCode = async (req, res) => {
  * @returns {Object} Json response with the data without the password
  */
 exports.changePassword = async (req, res) => {
-    const { userId } = req.user;
-    const { oldPassword, newPassword } = req.body;
-
     try {
+        const { userId } = req.user;
+        const { oldPassword, newPassword } = req.body;
+
         const { error } = changePasswordSchema.validate({ oldPassword, newPassword });
         if (error) {
             return res.status(401).json({ success: false, message: error.details[0].message });
