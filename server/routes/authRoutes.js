@@ -18,6 +18,8 @@ router.post('/signin', authController.signin)
 router.patch('/send-verification-code', authController.sendVerificationCode)
 router.patch('/verify-verification-code', authController.verifyVerificationCode)
 router.patch('/change-password', identifier, authController.changePassword)
+router.patch('/change-bio', identifier, authController.changeBio)
+router.patch('/change-username', identifier, authController.changeUsername)
 router.patch('/change-profile-pic', identifier, upload.single('image'), authController.changeProfilePic)
 
 router.put('/createProfile', identifier, upload.single('image'), authController.createProfile)

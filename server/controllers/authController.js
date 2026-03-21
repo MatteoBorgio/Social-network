@@ -10,6 +10,7 @@ const User = require("../models/User")
 const {doHash, doHashValidation, hmacProcess} = require("../utils/hashing");
 const jwt = require('jsonwebtoken')
 const transport = require("../middlewares/sendMail");
+const {json} = require("express");
 
 /**
  * Register a new user
@@ -181,6 +182,117 @@ exports.changeProfilePic = async (req, res) => {
             newProfilePic: profilePicPath
         })
 
+}
+
+/**
+ * Change the user bio
+ * Requires and authenticated user
+ * @returns {Object} Json response with the updated user bio
+ */
+exports.changeBio = async (req, res) => {
+    try {
+        const {userId} = req.user;
+
+        const {desc} = req.body;
+
+        if (!desc) {
+            return res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "Descrizione non specificata nella richiesta"
+                });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res
+                .status(404)
+                .json({
+                    success: false,
+                    message: "Utente non trovato."
+                });
+        }
+
+        user.desc = desc;
+        await user.save();
+
+        return res
+            .status(200)
+            .json({
+                success: true,
+                newDesc: desc
+            });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "An error has occurred",
+            error: error
+        });
+    }
+}
+
+/**
+ * Change the username, with joi validation
+ * Requires and authenticated user
+ * @returns {Object} Json response with the updated username
+ */
+exports.changeUsername = async (req, res) => {
+    try {
+        const {userId} = req.user;
+
+        const {username} = req.body;
+
+        if (!username) {
+            return res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "Username non specificato nella richiesta"
+                });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res
+                .status(404)
+                .json({
+                    success: false,
+                    message: "Utente non trovato."
+                });
+        }
+
+        // extracts username because signupSchema wants an email and a password
+        const usernameValidation = signupSchema.extract('username');
+
+        const { error } = usernameValidation.validate(username)
+        if (error) {
+            return res.status(401).json({
+                success: false,
+                message: error.details[0].message
+            })
+        }
+
+        user.username = username;
+
+        await user.save();
+
+        return res
+            .status(200)
+            .json({
+                success: true,
+                newUsername: username
+            });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "An error has occurred",
+            error: error
+        });
+    }
 }
 
 /**
