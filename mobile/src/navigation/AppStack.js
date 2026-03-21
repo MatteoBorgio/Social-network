@@ -6,8 +6,9 @@ import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import SettingsIcon from "../components/SettingsIcon";
-import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 import CreatePost from "../screens/CreatePost";
+import ChangeProfileScreen from "../screens/ChangeProfileScreen";
+import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 
 const Stack = createNativeStackNavigator()
 
@@ -31,6 +32,11 @@ export default function AppStack() {
             }}></Stack.Screen>
             <Stack.Screen name={"CreatePost"} component={CreatePost} options={{
                 title: "CreatePost",
+                headerTitle: "",
+                headerShown: true
+            }}></Stack.Screen>
+            <Stack.Screen name={"ChangeProfile"} component={ChangeProfileScreen} options={{
+                title: "ChangeProfile",
                 headerTitle: "",
                 headerShown: true
             }}></Stack.Screen>

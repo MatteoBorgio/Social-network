@@ -1,10 +1,9 @@
-const fs = require("fs").promises;
-
 /**
  * Controller for user verification and creation of the user profile
  * Includes the change password functionality and the verification code procedure
  */
 
+const fs = require("fs").promises;
 const {signupSchema, signinSchema, acceptCodeSchema, changePasswordSchema} = require("../middlewares/validator");
 const User = require("../models/User")
 const {doHash, doHashValidation, hmacProcess} = require("../utils/hashing");
@@ -123,7 +122,7 @@ exports.createProfile = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            results: updateUser,
+            result: updateUser,
             message: "User updated"
         });
     } catch (error) {
@@ -180,7 +179,7 @@ exports.changeProfilePic = async (req, res) => {
             .status(200)
             .json({
                 success: true,
-                newProfilePic: profilePicPath
+                result: profilePicPath
             });
     } catch (error) {
         console.log(error);
@@ -238,7 +237,7 @@ exports.changeBio = async (req, res) => {
             .status(200)
             .json({
                 success: true,
-                newDesc: desc
+                result: desc
             });
     } catch (error) {
         console.log(error);
@@ -299,7 +298,7 @@ exports.changeUsername = async (req, res) => {
             .status(200)
             .json({
                 success: true,
-                newUsername: username
+                result: username
             });
 
     } catch (error) {
