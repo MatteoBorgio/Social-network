@@ -60,7 +60,8 @@ exports.signup = async (req, res) => {
         const token = jwt.sign(
             {
                 userId: result._id,
-                email: result.email
+                email: result.email,
+                verified: result.verified || false
             },
             process.env.TOKEN_SECRET,
             { expiresIn: '48h' }
@@ -175,11 +176,17 @@ exports.changeProfilePic = async (req, res) => {
 
         await user.save();
 
+        const userResponse = user.toObject();
+        delete userResponse.password;
+        delete userResponse.verificationCode;
+        delete userResponse.verificationCodeValidation;
+
         return res
             .status(200)
             .json({
                 success: true,
-                result: profilePicPath
+                result: userResponse,
+                newProfilePic: profilePicPath
             });
     } catch (error) {
         console.log(error);
@@ -204,7 +211,7 @@ exports.changeBio = async (req, res) => {
 
         if (!desc) {
             return res
-                .status(401)
+                .status(400)
                 .json({
                     success: false,
                     message: "Descrizione non specificata nella richiesta"
@@ -223,7 +230,7 @@ exports.changeBio = async (req, res) => {
 
         if (desc.length > 150) {
             return res
-                .status(401)
+                .status(400)
                 .json({
                     success: false,
                     message: "La descrizione eccede i 150 caratteri"
@@ -233,11 +240,16 @@ exports.changeBio = async (req, res) => {
         user.desc = desc;
         await user.save();
 
+        const userResponse = user.toObject();
+        delete userResponse.password;
+        delete userResponse.verificationCode;
+        delete userResponse.verificationCodeValidation;
+
         return res
             .status(200)
             .json({
                 success: true,
-                result: desc
+                result: userResponse
             });
     } catch (error) {
         console.log(error);
@@ -262,7 +274,7 @@ exports.changeUsername = async (req, res) => {
 
         if (!username) {
             return res
-                .status(401)
+                .status(400)
                 .json({
                     success: false,
                     message: "Username non specificato nella richiesta"
@@ -284,7 +296,7 @@ exports.changeUsername = async (req, res) => {
 
         const { error } = usernameValidation.validate(username)
         if (error) {
-            return res.status(401).json({
+            return res.status(400).json({
                 success: false,
                 message: error.details[0].message
             })
@@ -294,11 +306,16 @@ exports.changeUsername = async (req, res) => {
 
         await user.save();
 
+        const userResponse = user.toObject();
+        delete userResponse.password;
+        delete userResponse.verificationCode;
+        delete userResponse.verificationCodeValidation;
+
         return res
             .status(200)
             .json({
                 success: true,
-                result: username
+                result: userResponse
             });
 
     } catch (error) {
@@ -348,7 +365,7 @@ exports.signin = async (req, res) => {
             email: existingUser.email,
             verified: existingUser.verified
         }, process.env.TOKEN_SECRET, {
-            expiresIn: '8h'
+            expiresIn: '48h'
         })
 
         existingUser.password = undefined
