@@ -16,6 +16,9 @@ export default function SettingsScreen({ navigation }) {
                 <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")}>
                     <Text style={styles.text}>modifica password</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("ChangeProfile")}>
+                    <Text style={styles.text}>modifica il tuo profilo</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

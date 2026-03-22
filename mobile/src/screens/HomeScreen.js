@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useContext } from "react";
-import { View, StyleSheet } from "react-native";
+import {View, StyleSheet, TouchableOpacity} from "react-native";
 import { UserContext } from "../context/UserContext";
 import Posts from "../components/Posts";
 import CreatePostIcon from "../components/CreatePostIcon";
@@ -35,5 +35,5 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F0F2F5',
-    }
+    },
 });
