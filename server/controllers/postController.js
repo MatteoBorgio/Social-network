@@ -12,16 +12,16 @@ const Post = require('../models/Post')
  * @returns {Object} Json response with the post information
  */
 exports.createPost = async (req, res) => {
-    console.log("Dati utente dal token:", req.user)
-
-    const { title, description } = req.body
-
-    let imagePath = null;
-    if (req.file) {
-        imagePath = req.file.path;
-    }
-
     try {
+        console.log("Dati utente dal token:", req.user)
+
+        const { title, description } = req.body;
+
+        let imagePath = null;
+        if (req.file) {
+            imagePath = req.file.path;
+        }
+
         const newPost = new Post({
             title,
             image: imagePath,
@@ -42,7 +42,7 @@ exports.createPost = async (req, res) => {
         console.log(error)
         return res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message || error
         })
     }
 }
@@ -137,7 +137,7 @@ exports.likePost = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message || error
         })
     }
 }
@@ -177,7 +177,7 @@ exports.deletePost = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message || error
         })
     }
 }
