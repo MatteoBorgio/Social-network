@@ -57,15 +57,47 @@ exports.getPosts = async (req, res) => {
         const posts = await Post.find()
             .sort({ createdAt: -1 })
             .populate('user', 'username email profilePicture');
+
+        if (!posts) {
+            return res.status(404).json({
+                success: false,
+                error: "Risorsa non trovata"
+            })
+        }
         return res.status(200).json({
             success: true,
             results: posts
         })
     } catch (error) {
-        console.log(error)
+        console.log(error);
         return res.status(500).json({
             success: false,
-            error: error
+            error: error.message || error
+        })
+    }
+}
+
+
+/**
+ * Get all the posts of a specific user
+ * @returns {Object} Json response with the object which contains all the information
+ * about the user posts
+ */
+exports.getMyPosts = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const myPosts = await Post.find({ user: userId })
+            .sort({ createdAt: -1 })
+            .populate('user', 'username email profilePicture');
+        return res.status(200).json({
+            success: true,
+            results: myPosts
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: error.message || error
         })
     }
 }
