@@ -1,4 +1,8 @@
 .env
+package.json
+package-lock.json
+/server/node_modules
+/server/uploads
 
 # Logs
 logs
