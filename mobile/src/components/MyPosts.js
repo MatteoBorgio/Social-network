@@ -1,24 +1,27 @@
-/**
- * File for the render of all the posts in the home page
- */
-
-import { ActivityIndicator, FlatList, View, StyleSheet } from "react-native"
-import { useEffect, useState } from "react"
+import { ActivityIndicator, FlatList, View, StyleSheet, Text, ListEmptyComponent } from "react-native"
+import { useEffect, useState, useContext } from "react"
 import axios from "axios"
 import Post from "./Post"
+import { UserContext } from "../context/UserContext"
 
-export default function Posts() {
-    const [posts, setPosts] = useState([])
+export default function MyPosts() {
+    const [myPosts, setMyPosts] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+
+    const { user } = useContext(UserContext)
 
     const getPosts = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('http://192.168.1.6:5000/api/post/get-all-posts')
+            const response = await axios.get('http://192.168.1.6:5000/api/post/get-my-posts', {
+                headers: {
+                    Authorization: `Bearer ${user?.token}`
+                }
+            })
 
             if (response.data.success) {
                 const data = response.data.results
-                setPosts(data)
+                setMyPosts(data)
             } else {
                 throw new Error(response.data.error)
             }
@@ -30,10 +33,12 @@ export default function Posts() {
     };
 
     useEffect(() => {
-        getPosts()
-    }, [])
+        if (user?.token) {
+            getPosts()
+        }
+    }, [user?.token])
 
-    if (isLoading && posts.length === 0) {
+    if (isLoading && myPosts.length === 0) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0064E0" />
@@ -44,10 +49,17 @@ export default function Posts() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={posts}
+                data={myPosts}
                 keyExtractor={(item) => item._id}
                 contentContainerStyle={styles.listContainer}
                 renderItem={({ item }) => <Post post={item} />}
+                ListEmptyComponent={
+                    !isLoading && (
+                        <View style={styles.emptyContainer}>
+                            <Text style={styles.emptyText}>Non hai ancora pubblicato nulla.</Text>
+                        </View>
+                    )
+                }
             />
         </View>
     )
@@ -66,5 +78,14 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         paddingBottom: 20
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        marginTop: 50
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#65676B',
+        fontWeight: '500'
     }
 })
