@@ -64,7 +64,6 @@ exports.signup = async (req, res) => {
                 verified: result.verified || false
             },
             process.env.TOKEN_SECRET,
-            { expiresIn: '48h' }
         );
 
         return res
