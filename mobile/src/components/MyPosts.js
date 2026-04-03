@@ -1,3 +1,9 @@
+/**
+ * File for the render of all the user posts
+ * in the setting section
+ * Need a verified user
+ */
+
 import { ActivityIndicator, FlatList, View, StyleSheet, Text, ListEmptyComponent } from "react-native"
 import { useEffect, useState, useContext } from "react"
 import axios from "axios"
