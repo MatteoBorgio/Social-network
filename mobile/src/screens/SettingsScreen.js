@@ -19,6 +19,9 @@ export default function SettingsScreen({ navigation }) {
                 <TouchableOpacity onPress={() => navigation.navigate("ChangeProfile")}>
                     <Text style={styles.text}>modifica il tuo profilo</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate("MyPosts")}>
+                    <Text style={styles.text}>i tuoi post</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

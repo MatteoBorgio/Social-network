@@ -9,6 +9,7 @@ import SettingsIcon from "../components/SettingsIcon";
 import CreatePost from "../screens/CreatePost";
 import ChangeProfileScreen from "../screens/ChangeProfileScreen";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen";
+import MyPostsScreen from "../screens/MyPostsScreen.js"
 
 const Stack = createNativeStackNavigator()
 
@@ -37,6 +38,11 @@ export default function AppStack() {
             }}></Stack.Screen>
             <Stack.Screen name={"ChangeProfile"} component={ChangeProfileScreen} options={{
                 title: "ChangeProfile",
+                headerTitle: "",
+                headerShown: true
+            }}></Stack.Screen>
+            <Stack.Screen name={"MyPosts"} component={MyPostsScreen} options={{
+                title: "MyPosts",
                 headerTitle: "",
                 headerShown: true
             }}></Stack.Screen>
