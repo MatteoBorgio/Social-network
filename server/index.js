@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser')
 const connectDB = require('./config/db')
 const authRouter = require("./routes/authRoutes")
 const postRouter = require("./routes/postRoutes")
+const userRouter = require("./routes/userRoutes.js")
 
 const PORT = process.env.PORT
 
@@ -31,8 +32,10 @@ app.use('/api/auth', authRouter)
 
 app.use('/api/post', postRouter)
 
+app.use('/api/user', userRouter)
+
 app.get('/', (req, res) => {
-    res.send('Server Social Network Attivo');
+    res.send('Server attivo');
 });
 
 app.listen(PORT, () => {
