@@ -93,3 +93,40 @@ exports.getMyFollowers = async (req, res) => {
         });
     }
 }
+
+/**
+ * Get all the followings of the active user
+ * @returns {Object} Json response with the object which contains
+ * the username, profilePicture and description
+ * of all the user followings
+ */
+exports.getMyFollowings = async (req, res) => {
+    try {
+        const {userId} = req.user;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Utente non trovato"
+            })
+        }
+
+        const followingsData = await User.find({
+            _id: { $in: user.followings }
+        }).select('username profilePicture desc');
+
+        return res.status(200).json({
+            success: true,
+            count: followingsData.length,
+            results: followingsData
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: error.message || error
+        });
+    }
+}
