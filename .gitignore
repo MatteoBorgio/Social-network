@@ -3,6 +3,8 @@ package.json
 package-lock.json
 /server/node_modules
 /server/uploads
+/mobile/node_modules
+/node_modules
 
 # Logs
 logs

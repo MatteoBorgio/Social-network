@@ -37,7 +37,7 @@ export default function SignupScreen({ navigation }) {
         if (user && !submitted) {
             navigation.reset({
                 index: 0,
-                routes: [{ name: "App", params: { screen: "Home" } }],
+                routes: [{ name: "App", params: { screen: "Tabs" } }],
             });
         }
     }, [user, submitted])
