@@ -10,6 +10,7 @@ import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native"
 import { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
+import { SERVER_URL, SERVER_URL_IMAGES } from "../../config/config.js";
 
 export default function Post({ post }) {
     const { user } = useContext(UserContext);
@@ -18,11 +19,11 @@ export default function Post({ post }) {
     const [likesCount, setLikesCount] = useState(post.likes ? post.likes.length : 0);
 
     const avatarUri = post.user?.profilePicture
-        ? `http://192.168.1.6:5000/${post.user.profilePicture.replace(/\\/g, '/')}`
+        ? `${ SERVER_URL_IMAGES }/${post.user.profilePicture.replace(/\\/g, '/')}`
         : 'https://via.placeholder.com/150';
 
     const postImageUri = post.image
-        ? `http://192.168.1.6:5000/${post.image.replace(/\\/g, '/')}`
+        ? `${ SERVER_URL_IMAGES }/${post.image.replace(/\\/g, '/')}`
         : null;
 
     const handleClick = async () => {
@@ -33,7 +34,7 @@ export default function Post({ post }) {
         setLikesCount(newIsLiked ? likesCount + 1 : likesCount - 1);
 
         try {
-            await axios.put(`http://192.168.1.6:5000/api/post/${post._id}/like`, {}, {
+            await axios.put(`${ SERVER_URL }/post/${post._id}/like`, {}, {
                 headers: {
                     'Authorization': `Bearer ${user?.token}`
                 }

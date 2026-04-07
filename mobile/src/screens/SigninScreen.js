@@ -19,6 +19,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {UserContext} from "../context/UserContext";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function SigninScreen({ navigation }) {
     const { user, loginUser, isLoading: isContextLoading } = useContext(UserContext);
@@ -66,8 +67,7 @@ export default function SigninScreen({ navigation }) {
             try {
                 setIsLoading(true)
                 const response = await axios.post(
-                    'http://192.168.1.6:5000/api/auth/signin',
-
+                    `${ SERVER_URL }/auth/signin`,
                     { email, password }
                 );
 

@@ -21,6 +21,7 @@ import {
 } from "react-native"
 import axios from "axios"
 import { UserContext } from "../context/UserContext"
+import { SERVER_URL } from "../../config/config.js";
 
 export default function SignupScreen({ navigation }) {
     const { user, isLoading: isContextLoading, loginUser } = useContext(UserContext)
@@ -67,7 +68,7 @@ export default function SignupScreen({ navigation }) {
             setIsLoading(true)
             try {
                 const response = await axios.post(
-                    'http://192.168.1.6:5000/api/auth/signup',
+                    `${ SERVER_URL }/auth/signup`,
                     { username, email, password }
                 );
 

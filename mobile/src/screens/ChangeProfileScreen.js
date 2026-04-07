@@ -22,6 +22,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { SERVER_URL, SERVER_URL_IMAGES } from "../../config/config.js";
 
 export default function ChangeProfileScreen({ navigation }) {
     const { user, loginUser, isLoading: isContextLoading } = useContext(UserContext);
@@ -103,7 +104,7 @@ export default function ChangeProfileScreen({ navigation }) {
                     type: fileType
                 });
 
-                const response = await axios.patch('http://192.168.1.6:5000/api/auth/change-profile-pic', formData, {
+                const response = await axios.patch(`${ SERVER_URL }/auth/change-profile-pic`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${user?.token}`
@@ -117,7 +118,7 @@ export default function ChangeProfileScreen({ navigation }) {
             }
 
             if (newDesc !== (user.desc || "")) {
-                const response = await axios.patch('http://192.168.1.6:5000/api/auth/change-bio', { desc: newDesc }, {
+                const response = await axios.patch(`${ SERVER_URL }/auth/change-bio`, { desc: newDesc }, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user?.token}`
@@ -131,7 +132,7 @@ export default function ChangeProfileScreen({ navigation }) {
             }
 
             if (newUsername !== user.username) {
-                const response = await axios.patch('http://192.168.1.6:5000/api/auth/change-username', { username: newUsername }, {
+                const response = await axios.patch(`${ SERVER_URL }/auth/change-username`, { username: newUsername }, {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${user?.token}`
@@ -164,7 +165,7 @@ export default function ChangeProfileScreen({ navigation }) {
     };
 
     const imageToDisplay = newProfilePic ? { uri: newProfilePic.uri }
-        : user?.profilePicture ? { uri: `http://192.168.1.6:5000/${user.profilePicture.replace(/\\/g, '/')}` }
+        : user?.profilePicture ? { uri: `${ SERVER_URL_IMAGES }/${user.profilePicture.replace(/\\/g, '/')}` }
             : null;
 
     return (

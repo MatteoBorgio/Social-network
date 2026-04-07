@@ -8,7 +8,8 @@ import { ActivityIndicator, FlatList, View, StyleSheet, Text, ListEmptyComponent
 import { useEffect, useState, useContext } from "react"
 import axios from "axios"
 import Post from "./Post"
-import { UserContext } from "../context/UserContext"
+import { UserContext } from "../context/UserContext";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function MyPosts() {
     const [myPosts, setMyPosts] = useState([])
@@ -19,7 +20,7 @@ export default function MyPosts() {
     const getPosts = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('http://192.168.1.6:5000/api/post/get-my-posts', {
+            const response = await axios.get(`${ SERVER_URL }/post/get-my-posts`, {
                 headers: {
                     Authorization: `Bearer ${user?.token}`
                 }

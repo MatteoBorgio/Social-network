@@ -9,6 +9,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useState} from "react";
 import axios from "axios";
 import {TemporaryEmailContext} from "../context/TemporaryEmail";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function SendVerificationCodeScreen({navigation}) {
     const [email, setEmail] = useState("")
@@ -33,7 +34,7 @@ export default function SendVerificationCodeScreen({navigation}) {
         if (validateForm()) {
             try {
                 const response = await axios.patch(
-                    'http://192.168.1.6:5000/api/auth/send-verification-code',
+                    `${ SERVER_URL }/auth/send-verification-code`,
                     { email }
                 )
 

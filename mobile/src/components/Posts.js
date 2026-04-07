@@ -5,7 +5,8 @@
 import { ActivityIndicator, FlatList, View, StyleSheet } from "react-native"
 import { useEffect, useState } from "react"
 import axios from "axios"
-import Post from "./Post"
+import Post from "./Post";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function Posts() {
     const [posts, setPosts] = useState([])
@@ -14,7 +15,7 @@ export default function Posts() {
     const getPosts = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get('http://192.168.1.6:5000/api/post/get-all-posts')
+            const response = await axios.get(`${ SERVER_URL }/post/get-all-posts`)
 
             if (response.data.success) {
                 const data = response.data.results

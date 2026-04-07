@@ -10,6 +10,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import React, {useContext, useState} from "react";
 import axios from "axios";
 import {UserContext} from "../context/UserContext";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function ChangePasswordScreen({ navigation }) {
     const [oldPassword, setOldPassword] = useState("")
@@ -37,7 +38,7 @@ export default function ChangePasswordScreen({ navigation }) {
                 setIsLoading(true)
 
                 const response = await axios.patch(
-                    'http://192.168.1.6:5000/api/auth/change-password',
+                    `${SERVER_URL}/auth/change-password`,
                     { oldPassword, newPassword },
                     {
                         headers: {

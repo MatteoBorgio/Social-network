@@ -10,6 +10,7 @@ import React, {useContext, useState} from "react";
 import axios from "axios";
 import {UserContext} from "../context/UserContext";
 import {TemporaryEmailContext} from "../context/TemporaryEmail";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function VerifyVerificationCode({ navigation }) {
     const [submitted, setSubmitted] = useState(false)
@@ -35,7 +36,7 @@ export default function VerifyVerificationCode({ navigation }) {
         try {
             if (validateForm()) {
                 const response = await axios.patch(
-                    'http://192.168.1.6:5000/api/auth/verify-verification-code',
+                    `${ SERVER_URL }/auth/verify-verification-code`,
                     { email: temporaryEmail, providedCode }
                 )
 

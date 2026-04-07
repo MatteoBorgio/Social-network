@@ -23,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { UserContext } from "../context/UserContext";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function CreateProfileScreen({ navigation }) {
     const { user, loginUser, isLoading: isContextLoading } = useContext(UserContext);
@@ -94,7 +95,7 @@ export default function CreateProfileScreen({ navigation }) {
         }
 
         try {
-            const response = await axios.put('http://192.168.1.6:5000/api/auth/createProfile', formData, {
+            const response = await axios.put(`${ SERVER_URL }/auth/createProfile`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${user?.token}`
