@@ -98,7 +98,7 @@ exports.createProfile = async (req, res) => {
 
         let profilePicPath = "";
         if (req.file) {
-            profilePicPath = req.file.path;
+            profilePicPath = `uploads/profiles/${req.file.filename}`;
         }
 
         const updateUser = await User.findByIdAndUpdate(
@@ -147,7 +147,7 @@ exports.changeProfilePic = async (req, res) => {
 
         let profilePicPath = "";
         if (req.file) {
-            profilePicPath = req.file.path;
+            profilePicPath = `uploads/profiles/${req.file.filename}`;
         }
 
         const user = await User.findById(userId);
@@ -164,8 +164,11 @@ exports.changeProfilePic = async (req, res) => {
 
         if (oldProfilePic && oldProfilePic !== "") {
             try {
-                await fs.unlink(oldProfilePic);
-                console.log('Vecchia foto eliminata con successo:', oldProfilePic);
+                // Per eliminare serve il percorso fisico assoluto
+                const path = require('path');
+                const absoluteOldPath = path.resolve(process.cwd(), oldProfilePic);
+                await fs.unlink(absoluteOldPath);
+                console.log('Vecchia foto eliminata con successo:', absoluteOldPath);
             } catch (err) {
                 console.warn('Impossibile eliminare la vecchia foto, forse non esiste fisicamente:', err.message);
             }

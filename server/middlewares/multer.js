@@ -5,6 +5,7 @@
 
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 /**
  * Configure storage settings for uploaded files
@@ -13,7 +14,14 @@ const path = require('path');
  */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/profiles/');
+        const rootDir = process.cwd();
+        const dest = path.resolve(rootDir, 'uploads', 'profiles');
+
+        if (!fs.existsSync(dest)) {
+            fs.mkdirSync(dest, { recursive: true });
+        }
+
+        cb(null, dest);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

@@ -23,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { UserContext } from "../context/UserContext";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import { SERVER_URL } from "../../config/config.js";
 
 export default function CreatePost({ navigation }) {
     const { user } = useContext(UserContext);
@@ -70,14 +71,16 @@ export default function CreatePost({ navigation }) {
             const fileType = postImage.mimeType || 'image/jpeg';
 
             formData.append('image', {
-                uri: uri,
+                uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
                 name: fileName,
                 type: fileType,
             });
         }
 
         try {
-            const response = await axios.post('http://192.168.1.6:5000/api/post/create', formData, {
+            const cleanUrl = SERVER_URL.endsWith('/') ? `${SERVER_URL}post/create` : `${SERVER_URL}/post/create`;
+
+            const response = await axios.post(cleanUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${user?.token}`
@@ -88,7 +91,10 @@ export default function CreatePost({ navigation }) {
                 setTitle("");
                 setDescription("");
                 setPostImage(null);
-                navigation.navigate('Home');
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: "Tabs" }],
+                });
             }
         } catch (error) {
             let errorMsg = error.response?.data?.message || "Errore durante la creazione del post.";

@@ -13,13 +13,13 @@ const Post = require('../models/Post')
  */
 exports.createPost = async (req, res) => {
     try {
-        console.log("Dati utente dal token:", req.user)
+        console.log("File ricevuto da Multer:", req.file);
 
         const { title, description } = req.body;
 
         let imagePath = null;
         if (req.file) {
-            imagePath = req.file.path;
+            imagePath = `uploads/profiles/${req.file.filename}`;
         }
 
         const newPost = new Post({
